@@ -15,7 +15,7 @@ namespace Task1Tests
         {
             var matrixString = "1 2 3 4 \n5 6 7 8 \n9 10 11 12 \n";
 
-            Tools.Write(writeFromFilePath, matrixString);
+            File.WriteAllText(writeFromFilePath, matrixString);
 
             var rows = 3;
             var columns = 4;
@@ -43,7 +43,7 @@ namespace Task1Tests
         {
             var matrixString = "1 2 3 \n4 5 6 7 \n8 9 10 \n";
 
-            Tools.Write(writeFromFilePath, matrixString);
+            File.WriteAllText(writeFromFilePath, matrixString);
 
             Assert.That(() => Parser.Parse(writeFromFilePath),
                 Throws.TypeOf<ArgumentException>()
@@ -56,7 +56,7 @@ namespace Task1Tests
         {
             var matrixString = "1 2 3 0 \n4 W 6 7 \n8 9 10 0 \n";
 
-            Tools.Write(writeFromFilePath, matrixString);
+            File.WriteAllText(writeFromFilePath, matrixString);
 
             Assert.That(() => Parser.Parse(writeFromFilePath),
                 Throws.TypeOf<ArgumentException>()

@@ -7,9 +7,9 @@ namespace Task1Tests
 {
     class MatrixMultiplicationTests
     {
-        private Matrix Left;
-        private Matrix Right;
-        private Matrix ExpectedResult;
+        private Matrix left;
+        private Matrix right;
+        private Matrix expectedResult;
 
         private string leftPath = "BasicTestA.txt";
         private string rightPath = "BasicTestB.txt";
@@ -24,26 +24,26 @@ namespace Task1Tests
             var leftString = "4 3 7 1 \n2 4 8 10 \n15 4 6 9 \n";
             var rightString = "6 8 \n4 3 \n1 2 \n5 7 \n";
 
-            Tools.Write(leftPath, leftString);
-            Tools.Write(rightPath, rightString);
-            Tools.Write(expectedResultPath, expectedResultString);
+            File.WriteAllText(leftPath, leftString);
+            File.WriteAllText(rightPath, rightString);
+            File.WriteAllText(expectedResultPath, expectedResultString);
 
-            Left = new Matrix(leftPath);
-            Right = new Matrix(rightPath);
-            ExpectedResult = new Matrix(expectedResultPath);
+            left = new Matrix(leftPath);
+            right = new Matrix(rightPath);
+            expectedResult = new Matrix(expectedResultPath);
         }
 
         [Test]
         public void SimpleMultiplicationTest()
         {
             Assert.AreEqual(
-                ExpectedResult, Matrix.SingleThreadedMultiply(Left, Right));
+                expectedResult, Matrix.SingleThreadedMultiply(left, right));
         }
 
         [Test]
         public void SimpleMultiplicationShouldThrowIfDimensionsDontMatch()
         {
-            Assert.That(() => Matrix.SingleThreadedMultiply(Right, Left),
+            Assert.That(() => Matrix.SingleThreadedMultiply(right, left),
                 Throws.TypeOf<ArgumentException>()
                     .With.Message.EqualTo(
                     "Invalid input: matrices have invalid dimensions."));
@@ -52,8 +52,8 @@ namespace Task1Tests
         [Test]
         public void SimpleMultiplicationWithWritingTest()
         {
-            Matrix.MultiplyAndWrite(Left, Right, false, outputFilePath);
-            var actualString = Tools.Read(outputFilePath);
+            Matrix.MultiplyAndWrite(left, right, false, outputFilePath);
+            var actualString = File.ReadAllText(outputFilePath);
             
             Assert.AreEqual(expectedResultString, actualString);
         }
@@ -61,13 +61,13 @@ namespace Task1Tests
         [Test]
         public void ThreadedMultiplicationTest()
         {
-            Assert.AreEqual(ExpectedResult, Matrix.MultiThreadedMultiply(Left, Right));
+            Assert.AreEqual(expectedResult, Matrix.MultiThreadedMultiply(left, right));
         }
 
         [Test]
         public void ThreadedMultiplicationShouldThrowIfDimensionsDontMatch()
         {
-            Assert.That(() => Matrix.MultiThreadedMultiply(Right, Left),
+            Assert.That(() => Matrix.MultiThreadedMultiply(right, left),
                 Throws.TypeOf<ArgumentException>()
                     .With.Message.EqualTo(
                     "Invalid input: matrices have invalid dimensions."));
@@ -76,8 +76,8 @@ namespace Task1Tests
         [Test]
         public void ThreadedMultiplicationWithWritingTest()
         {
-            Matrix.MultiplyAndWrite(Left, Right, true, outputFilePath);
-            var actualString = Tools.Read(outputFilePath);
+            Matrix.MultiplyAndWrite(left, right, true, outputFilePath);
+            var actualString = File.ReadAllText(outputFilePath);
 
             Assert.AreEqual(expectedResultString, actualString);
         }

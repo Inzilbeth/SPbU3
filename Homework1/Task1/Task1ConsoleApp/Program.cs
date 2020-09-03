@@ -69,11 +69,11 @@ namespace Task1
             stopWatch.Start();
             if (isThreaded)
             {
-                var res = Matrix.MultiThreadedMultiply(a, b);
+                Matrix.MultiThreadedMultiply(a, b);
             }
             else
             {
-                var res = Matrix.SingleThreadedMultiply(a, b);
+                Matrix.SingleThreadedMultiply(a, b);
             }
             stopWatch.Stop();
 
@@ -90,9 +90,9 @@ namespace Task1
             {
                 Profile(50, 10);
                 Profile(100, 10);
+                Profile(300, 10);
                 Profile(600, 10);
                 Profile(800, 10);
-                Profile(1000, 10);
             }
             else if (answer.Equals("n"))
             {
@@ -105,6 +105,10 @@ namespace Task1
 
                 Matrix.MultiplyAndWrite(
                     new Matrix(pathLeft), new Matrix(pathRight), true, pathResult);
+            }
+            else
+            {
+                throw new ArgumentException("There is no such an option!");
             }
         }
     }

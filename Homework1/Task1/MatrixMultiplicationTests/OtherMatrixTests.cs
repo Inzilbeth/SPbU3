@@ -13,7 +13,7 @@ namespace Task1Tests
         {
             var matrixString = "4 3 7 1 \n2 4 8 10 \n15 4 6 9 \n";
 
-            Tools.Write(paths[0], matrixString);
+            File.WriteAllText(paths[0], matrixString);
 
             var a = new Matrix(paths[0]);
             var b = new Matrix(paths[0]);
@@ -27,8 +27,8 @@ namespace Task1Tests
             var firstMatrixString = "4 3 7 1 \n2 4 8 10 \n15 4 6 9 \n";
             var secondMatrixString = "2 3 7 1 \n2 4 8 10 \n15 4 6 9 \n";
 
-            Tools.Write(paths[0], firstMatrixString);
-            Tools.Write(paths[1], secondMatrixString);
+            File.WriteAllText(paths[0], firstMatrixString);
+            File.WriteAllText(paths[1], secondMatrixString);
 
             var a = new Matrix(paths[0]);
             var b = new Matrix(paths[1]);
@@ -41,7 +41,7 @@ namespace Task1Tests
         {
             var matrixString = "10 20 \n30 45 \n";
 
-            Tools.Write(paths[0], matrixString);
+            File.WriteAllText(paths[0], matrixString);
 
             var matrix = new Matrix(paths[0]);
 

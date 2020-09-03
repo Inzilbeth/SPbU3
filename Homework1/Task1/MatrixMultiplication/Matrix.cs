@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Task1
@@ -11,9 +10,6 @@ namespace Task1
     /// </summary>
     public class Matrix
     {
-        public int Rows { get; set; }
-        public int Columns { get; set; }
-
         private long[,] matrixArray;
 
         /// <summary>
@@ -24,8 +20,6 @@ namespace Task1
         { 
             var parsedMatrix = Parser.Parse(path);
 
-            Rows = parsedMatrix.Rows;
-            Columns = parsedMatrix.Columns;
             matrixArray = parsedMatrix.matrixArray;
         }
 
@@ -36,9 +30,6 @@ namespace Task1
         /// <param name="columns">Columns amount.</param>
         public Matrix(int rows, int columns)
         {
-            Rows = rows;
-            Columns = columns;
-
             matrixArray = new long[rows, columns];
         }
 
@@ -48,11 +39,11 @@ namespace Task1
         /// <returns>The matrix itself now filled with random values.</returns>
         public Matrix RandomizeValues(int maxValue)
         {
-            var random = new Random((int)DateTime.Now.Ticks);
+            var random = new Random();
 
-            for (int i = 0; i < Rows; i++)
+            for (int i = 0; i < matrixArray.GetLength(0); i++)
             {
-                for (int j = 0; j < Columns; j++)
+                for (int j = 0; j < matrixArray.GetLength(1); j++)
                 {
                     matrixArray[i, j] = random.Next(maxValue);
                 }
@@ -78,11 +69,11 @@ namespace Task1
         /// </summary>
         public void WriteToConsole()
         {
-            for (int i = 0; i < Rows; i++)
+            for (int i = 0; i < matrixArray.GetLength(0); i++)
             {
-                for (int j = 0; j < Columns; j++)
+                for (int j = 0; j < matrixArray.GetLength(1); j++)
                 {
-                    Console.Write($"{matrixArray[i, j]} ");
+                    Console.Write(string.Format("{0,5}", matrixArray[i, j]));
                 }
 
                 Console.WriteLine();
@@ -121,9 +112,9 @@ namespace Task1
         {
             using (var streamWriter = new StreamWriter(path))
             {
-                for (int i = 0; i < Rows; i++)
+                for (int i = 0; i < matrixArray.GetLength(0); i++)
                 {
-                    for (int j = 0; j < Columns; j++)
+                    for (int j = 0; j < matrixArray.GetLength(1); j++)
                     {
                         streamWriter.Write($"{matrixArray[i, j]} ");
                     }
@@ -134,7 +125,7 @@ namespace Task1
         }
 
         /// <summary>
-        /// Multiplies two matrices using threading.
+        /// Multiplies two matrices using a simple single-threaded algorithm.
         /// </summary>
         /// <param name="a">Left matrix.</param>
         /// <param name="b">Right matrix.</param>
@@ -147,31 +138,48 @@ namespace Task1
                     "Invalid input: matrices have invalid dimensions.");
             }
 
-            var result = new Matrix(a.Rows, b.Columns);
-            var threads = new List<Thread>();
+            var result = new Matrix(a.matrixArray.GetLength(0), b.matrixArray.GetLength(1));
 
-            for (int i = 0; i < a.Rows; i++)
+            var threadsAmount = 10;
+            var threads = new Thread[threadsAmount];
+            int chunkSize;
+
+            if (a.matrixArray.GetLength(0) > (threads.Length + 1))
+            {
+                chunkSize = a.matrixArray.GetLength(0) / (threads.Length + 1);
+            }
+            else
+            {
+                chunkSize = a.matrixArray.GetLength(0);
+            }
+
+            for (int i = 0; i < threadsAmount; i++)
             {
                 var localI = i;
-
-                var thread = new Thread(() =>
+                threads[i] = new Thread (() =>
                 {
-                    for (int j = 0; j < b.Columns; j++)
+                    for (var j = localI * chunkSize; j < (localI + 1) * chunkSize 
+                        && j < a.matrixArray.GetLength(0); j++)
                     {
-                        result[localI, j] = 0;
-
-                        for (var k = 0; k < a.Columns; k++)
+                        for (int f = 0; f < b.matrixArray.GetLength(1); f++)
                         {
-                            result[localI, j] += a[localI, k] * b[k, j];
+                            result[j, f] = 0;
+
+                            for (var k = 0; k < a.matrixArray.GetLength(1); k++)
+                            {
+                                result[j, f] += a[j, k] * b[k, f];
+                            }
                         }
                     }
                 });
-
-                thread.Start();
-                threads.Add(thread);
             }
 
-            foreach (Thread thread in threads)
+            foreach (var thread in threads)
+            {
+                thread.Start();
+            }
+
+            foreach (var thread in threads)
             {
                 thread.Join();
             }
@@ -179,6 +187,7 @@ namespace Task1
             return result;
         }
 
+        
         /// <summary>
         /// Multiplies two matrices using a simple single-threaded algorithm.
         /// </summary>
@@ -193,15 +202,15 @@ namespace Task1
                     "Invalid input: matrices have invalid dimensions.");
             }
 
-            var result = new Matrix(a.Rows, b.Columns);
+            var result = new Matrix(a.matrixArray.GetLength(0), b.matrixArray.GetLength(1));
 
-            for (var i = 0; i < a.Rows; i++)
+            for (var i = 0; i < a.matrixArray.GetLength(0); i++)
             {
-                for (var j = 0; j < b.Columns; j++)
+                for (var j = 0; j < b.matrixArray.GetLength(1); j++)
                 {
                     result[i, j] = 0;
 
-                    for (var k = 0; k < a.Columns; k++)
+                    for (var k = 0; k < a.matrixArray.GetLength(1); k++)
                     {
                         result[i, j] += a[i, k] * b[k, j];
                     }
@@ -218,22 +227,23 @@ namespace Task1
         /// <param name="b">Second matrix.</param>
         /// <returns>Whether two matrices are multipliable or not.</returns>
         private static bool AreMultipliable(Matrix a, Matrix b)
-            => a.Columns == b.Rows;
+            => a.matrixArray.GetLength(1) == b.matrixArray.GetLength(0);
 
         public override bool Equals(object obj)
         {
-            if (obj is Matrix)
+            if (obj is Matrix && obj != null)
             {
                 var that = obj as Matrix;
 
-                if (Rows != that.Rows || Columns != that.Columns)
+                if (matrixArray.GetLength(0) != that.matrixArray.GetLength(0) 
+                    || matrixArray.GetLength(1) != that.matrixArray.GetLength(1))
                 {
                     return false;
                 }
 
-                for (int i = 0; i < Rows; i++)
+                for (int i = 0; i < matrixArray.GetLength(0); i++)
                 {
-                    for (int j = 0; j < Columns; j++)
+                    for (int j = 0; j < matrixArray.GetLength(1); j++)
                     {
                         if (matrixArray[i, j] != that.matrixArray[i, j])
                         {
@@ -241,15 +251,17 @@ namespace Task1
                         }
                     }
                 }
+
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         public override int GetHashCode()
         {
-            var hashCode = Rows.GetHashCode();
-            hashCode ^= Columns.GetHashCode();
+            var hashCode = matrixArray.GetLength(0).GetHashCode();
+            hashCode ^= matrixArray.GetLength(1).GetHashCode();
             hashCode ^= matrixArray.GetHashCode();
             return hashCode;
         }
