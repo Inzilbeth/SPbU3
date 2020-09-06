@@ -62,6 +62,23 @@ namespace Task1Tests
             Assert.AreEqual(expectedValue, matrix[0, 0]);
         }
 
+        [Test]
+        public void TransposeTest()
+        {
+            var matrixString = "10 20 \n30 45 \n";
+
+            File.WriteAllText(paths[0], matrixString);
+
+            var matrix = new Matrix(paths[0]);
+
+            matrix.SillyTranspose();
+
+            Assert.AreEqual(10, matrix[0, 0]);
+            Assert.AreEqual(30, matrix[0, 1]);
+            Assert.AreEqual(20, matrix[1, 0]);
+            Assert.AreEqual(45, matrix[1, 1]);
+        }
+
         [OneTimeTearDown]
         public void DeleteFiles()
         {

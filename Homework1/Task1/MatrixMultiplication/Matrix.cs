@@ -53,6 +53,27 @@ namespace Task1
         }
 
         /// <summary>
+        /// Transposes the matrix using cache-unfriendly algorithm and returns it.
+        /// </summary>
+        /// <returns>Transposed matrix.</returns>
+        public Matrix SillyTranspose()
+        {
+            var temporaryArray = matrixArray;
+
+            matrixArray = new long[temporaryArray.GetLength(1), temporaryArray.GetLength(0)];
+
+            for (int i = 0; i < matrixArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrixArray.GetLength(1); j++)
+                {
+                    matrixArray[i, j] = temporaryArray[j, i];
+                }
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Gets/sets the value with the input coordinates.
         /// </summary>
         /// <param name="i">First coordinate.</param>
@@ -125,7 +146,7 @@ namespace Task1
         }
 
         /// <summary>
-        /// Multiplies two matrices using a simple single-threaded algorithm.
+        /// Multiplies two matrices using multithreading.
         /// </summary>
         /// <param name="a">Left matrix.</param>
         /// <param name="b">Right matrix.</param>
@@ -138,7 +159,9 @@ namespace Task1
                     "Invalid input: matrices have invalid dimensions.");
             }
 
-            var result = new Matrix(a.matrixArray.GetLength(0), b.matrixArray.GetLength(1));
+            b.SillyTranspose();
+
+            var result = new Matrix(a.matrixArray.GetLength(0), b.matrixArray.GetLength(0));
 
             var threadsAmount = 10;
             var threads = new Thread[threadsAmount];
@@ -156,18 +179,18 @@ namespace Task1
             for (int i = 0; i < threadsAmount; i++)
             {
                 var localI = i;
-                threads[i] = new Thread (() =>
+                threads[i] = new Thread(() =>
                 {
-                    for (var j = localI * chunkSize; j < (localI + 1) * chunkSize 
+                    for (var j = localI * chunkSize; j < (localI + 1) * chunkSize
                         && j < a.matrixArray.GetLength(0); j++)
                     {
-                        for (int f = 0; f < b.matrixArray.GetLength(1); f++)
+                        for (int f = 0; f < b.matrixArray.GetLength(0); f++)
                         {
                             result[j, f] = 0;
 
                             for (var k = 0; k < a.matrixArray.GetLength(1); k++)
                             {
-                                result[j, f] += a[j, k] * b[k, f];
+                                result[j, f] += a[j, k] * b[f, k];
                             }
                         }
                     }
@@ -187,7 +210,6 @@ namespace Task1
             return result;
         }
 
-        
         /// <summary>
         /// Multiplies two matrices using a simple single-threaded algorithm.
         /// </summary>

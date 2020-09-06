@@ -80,7 +80,6 @@ namespace Task1
             return stopWatch.Elapsed;
         }
 
-
         public static void Main()
         {
             Console.WriteLine("Do you want to see perfomance tests? (y/n)");
@@ -88,11 +87,9 @@ namespace Task1
 
             if (answer.Equals("y"))
             {
-                Profile(50, 10);
-                Profile(100, 10);
-                Profile(300, 10);
-                Profile(600, 10);
-                Profile(800, 10);
+                Profile(100, 20);
+                Profile(500, 20);
+                Profile(1000, 20);
             }
             else if (answer.Equals("n"))
             {
