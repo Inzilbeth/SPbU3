@@ -22,10 +22,7 @@ jobs:
         dotnet-version: 3.1.301
     - name: Install dependencies
       run: dotnet restore Homework2\Task1\
-           dotnet restore Homework1\Task1\
     - name: Build
       run: dotnet build Homework2\Task1\ --configuration Release --no-restore
-           dotnet build Homework1\Task1\ --configuration Release --no-restore
     - name: Test
       run: dotnet test Homework2\Task1\ --no-restore --verbosity normal
-           dotnet test Homework1\Task1\ --no-restore --verbosity normal 
