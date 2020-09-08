@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore Homework*/Task*.sln
     - name: Build
       run: dotnet build Homework*/Task*.sln --configuration Release --no-restore
     - name: Test
