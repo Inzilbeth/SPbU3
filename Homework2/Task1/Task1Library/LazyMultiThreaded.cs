@@ -8,18 +8,23 @@ namespace Task1Library
     /// <typeparam name="T">Type of an object to be initialized.</typeparam>
     public class LazyMultiThreaded<T> : ILazy<T>
     {
-        private T resource;
+        private T instance;
         private volatile bool isInitialized;
-        private Func<T> compute;
+        private Func<T> supplier;
         private readonly object syncRoot = new object();
+
+        /// <summary>
+        /// Checks if an instance is already initialized.
+        /// </summary>
+        public bool IsInitialized { get => isInitialized;}
 
         /// <summary>
         /// Builds an instance of <see cref="LazyMultiThreaded{T}"/> by input function.
         /// </summary>
-        /// <param name="func">Function that creates an object of type <see cref="{T}"/>.</param>
-        public LazyMultiThreaded(Func<T> func)
+        /// <param name="supplier">Function that creates an object of type <see cref="{T}"/>.</param>
+        public LazyMultiThreaded(Func<T> supplier)
         {
-            compute = func;
+            this.supplier = supplier;
             isInitialized = false;
         }
 
@@ -36,14 +41,37 @@ namespace Task1Library
                 {
                     if (!isInitialized)
                     {
-                        resource = compute();
+                        instance = supplier();
                         isInitialized = true;
-                        compute = null;
+                        supplier = null;
                     }
                 }
             }
 
-            return resource;
+            return instance;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is LazyMultiThreaded<T> && obj != null)
+            {
+                var that = obj as LazyMultiThreaded<T>;
+
+                return instance.Equals(that.instance) &&
+                    isInitialized.Equals(that.isInitialized) &&
+                    supplier.Equals(that.supplier);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = instance.GetHashCode() ^
+                isInitialized.GetHashCode() ^
+                supplier.GetHashCode();
+
+            return hashCode;
         }
     }
 }

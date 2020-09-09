@@ -8,16 +8,22 @@ namespace Task1Library
     /// <typeparam name="T">Type of an object to be initialized.</typeparam>
     public class LazySingleThreaded<T> : ILazy<T>
     {
-        private static T resource;
-        private static Func<T> compute;
+        private T instance;
+        private Func<T> supplier;
+
+        /// <summary>
+        /// Checks if an instance is already initialized.
+        /// </summary>
+        public bool IsInitialized { get; private set; }
 
         /// <summary>
         /// Builds an instance of <see cref="LazySingleThreaded{T}"/> by input function.
         /// </summary>
-        /// <param name="func">Function that creates an object of type <see cref="{T}"/>.</param>
-        public LazySingleThreaded(Func<T> func)
+        /// <param name="supplier">Function that creates an object of type <see cref="{T}"/>.</param>
+        public LazySingleThreaded(Func<T> supplier)
         {
-            compute = func;
+            this.supplier = supplier;
+            IsInitialized = false;
         }
 
         /// <summary>
@@ -27,12 +33,35 @@ namespace Task1Library
         /// <returns>Stored object of type<see cref="{T}"/>.</returns>
         public T Get()
         {
-            if (resource == null)
+            if (!IsInitialized)
             {
-                resource = compute();
+                instance = supplier();
+                IsInitialized = true;
+                supplier = null;
             }
 
-            return resource;
+            return instance;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is LazySingleThreaded<T> && obj != null)
+            {
+                var that = obj as LazySingleThreaded<T>;
+
+                return instance.Equals(that.instance) &&
+                    supplier.Equals(that.supplier);
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = instance.GetHashCode() ^
+                supplier.GetHashCode();
+
+            return hashCode;
         }
     }
 }
