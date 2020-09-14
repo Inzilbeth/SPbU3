@@ -10,17 +10,13 @@ namespace Task1Tests
 
         [Test]
         public void CreateSingleThreadedLazyWorks()
-        {
-            Assert.AreEqual(new LazySingleThreaded<int>(dummySupplier),
+            => Assert.AreEqual(new LazySingleThreaded<int>(dummySupplier),
                 LazyFactory.CreateSingleThreaded(dummySupplier));
-        }
 
         [Test]
         public void CreateMultiThreadedLazyWorks()
-        {
-            Assert.AreEqual(new LazyMultiThreaded<int>(dummySupplier),
+            => Assert.AreEqual(new LazyMultiThreaded<int>(dummySupplier),
                 LazyFactory.CreateMultiThreaded(dummySupplier));
-        }
 
     }
 }

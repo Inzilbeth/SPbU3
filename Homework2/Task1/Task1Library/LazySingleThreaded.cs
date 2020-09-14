@@ -43,6 +43,12 @@ namespace Task1Library
             return instance;
         }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// NOT thread safe.
+        /// </summary>
+        /// <param name="obj">Object to compare to.</param>
+        /// <returns>True if objects are equal, esle - false.</returns>
         public override bool Equals(object obj)
         {
             if (obj is LazySingleThreaded<T> && obj != null)
@@ -56,6 +62,11 @@ namespace Task1Library
             return false;
         }
 
+        /// <summary>
+        /// Serves as the default hash function.
+        /// NOT thread safe.
+        /// </summary>
+        /// <returns>A hash code for the current object.</returns>
         public override int GetHashCode()
         {
             var hashCode = instance.GetHashCode() ^

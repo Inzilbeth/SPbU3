@@ -14,9 +14,7 @@ namespace Task1Library
         /// <param name="supplier">Function that computes an object of type <see cref="{T}"/>.</param>
         /// <returns><see cref="LazySingleThreaded{T}"/> instance.</returns>
         public static LazySingleThreaded<T> CreateSingleThreaded<T>(Func<T> supplier)
-        {
-            return new LazySingleThreaded<T>(supplier);
-        }
+            => new LazySingleThreaded<T>(supplier);
 
         /// <summary>
         /// Creates an instance of <see cref="LazyMultiThreaded{T}"/>.
@@ -25,8 +23,6 @@ namespace Task1Library
         /// <param name="supplier">Function that computes an object of type <see cref="{T}"/>.</param>
         /// <returns><see cref="LazyMultiThreaded{T}"/> instance.</returns>
         public static LazyMultiThreaded<T> CreateMultiThreaded<T>(Func<T> supplier)
-        {
-            return new LazyMultiThreaded<T>(supplier);
-        }
+            => new LazyMultiThreaded<T>(supplier);
     }
 }
