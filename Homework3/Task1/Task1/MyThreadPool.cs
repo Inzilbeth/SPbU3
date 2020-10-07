@@ -87,8 +87,8 @@ namespace Task1
         /// <param name="func">Function used to calculate the result.</param>
         /// <param name="oldResult">Old task's result value.</param>
         /// <returns>>A reference to the newly generated task.</returns>
-        public IMyTask<TNewResult> Enqueue<TResult, TNewResult>(
-            Func<TResult, TNewResult> func, TResult oldResult)
+        public IMyTask<TNewResult> Enqueue<TResult, TNewResult>
+            (Func<TResult, TNewResult> func, TResult oldResult)
         {
             var myTask = new MyContinuedTask<TResult, TNewResult>(func, oldResult, this);
 
