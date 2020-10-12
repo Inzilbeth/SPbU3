@@ -9,8 +9,8 @@ namespace Task1
     /// </summary>
     public class MyThreadPool
     {
-        public delegate void AbortionHandler();
-        public event AbortionHandler onShutdown;
+        public delegate void Action();
+        public event Action OnShutdown;
 
         private Thread[] threads;
         private ConcurrentQueue<Action> queue;
@@ -18,6 +18,8 @@ namespace Task1
         private ManualResetEvent reset;
         private CancellationTokenSource cancelTokenSource;
 
+        private object locker = new object();
+        
         /// <summary>
         /// Sets up a pool with specified amount of threads.
         /// </summary>
@@ -70,12 +72,25 @@ namespace Task1
         /// <returns>A reference to the generated task.</returns>
         public IMyTask<TResult> Enqueue<TResult>(Func<TResult> func)
         {
-            var myTask = new MyTask<TResult>(func, this);
+            if (!cancelTokenSource.IsCancellationRequested)
+            {
+                lock (locker)
+                {
+                    if (!cancelTokenSource.IsCancellationRequested)
+                    {
+                        var myTask = new MyTask<TResult>(func, this);
 
-            onShutdown += myTask.Abort;
-            queue.Enqueue(myTask.Calculate);
-            reset.Set();
-            return myTask;
+                        OnShutdown += myTask.Abort;
+                        queue.Enqueue(myTask.Calculate);
+                        reset.Set();
+                        return myTask;
+                    }
+
+                    throw new InvalidOperationException("Pool is stopped");
+                }
+            }
+
+            throw new InvalidOperationException("Pool is stopped");
         }
 
         /// <summary>
@@ -90,12 +105,25 @@ namespace Task1
         public IMyTask<TNewResult> Enqueue<TResult, TNewResult>
             (Func<TResult, TNewResult> func, TResult oldResult)
         {
-            var myTask = new MyContinuedTask<TResult, TNewResult>(func, oldResult, this);
+            if (!cancelTokenSource.IsCancellationRequested)
+            {
+                lock (locker)
+                {
+                    if (!cancelTokenSource.IsCancellationRequested)
+                    {
+                        var myTask = new MyContinuedTask<TResult, TNewResult>(func, oldResult, this);
 
-            onShutdown += myTask.Abort;
-            queue.Enqueue(myTask.Calculate);
-            reset.Set();
-            return myTask;
+                        OnShutdown += myTask.Abort;
+                        queue.Enqueue(myTask.Calculate);
+                        reset.Set();
+                        return myTask;
+                    }
+
+                    throw new InvalidOperationException("Pool is stopped");
+                }
+            }
+
+            throw new InvalidOperationException("Pool is stopped");
         }
 
         /// <summary>
@@ -103,8 +131,12 @@ namespace Task1
         /// </summary>
         public void Shutdown()
         {
-            cancelTokenSource.Cancel();
-            onShutdown();
+            lock (locker)
+            {
+                cancelTokenSource.Cancel();
+            }
+            
+            OnShutdown();
 
             reset.Close();
 

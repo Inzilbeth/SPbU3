@@ -14,6 +14,7 @@ namespace Task1
         private TResult result;
         private TOldResult oldResult;
         private bool isPoolStopped;
+        private Exception exception;
 
         private ManualResetEvent reset;
         private MyThreadPool creator;
@@ -58,7 +59,12 @@ namespace Task1
                 if (!IsCompleted)
                 {
                     reset.WaitOne();
-                    
+
+                    if (!(exception == null))
+                    {
+                        throw new AggregateException(exception);
+                    }
+
                     if (isPoolStopped)
                     {
                         throw new InvalidOperationException("Task was aborted.");
@@ -84,7 +90,7 @@ namespace Task1
             }
             catch (Exception exception)
             {
-                throw new AggregateException(exception.Message, exception);
+                this.exception = exception;
             }
         }
 
@@ -110,8 +116,7 @@ namespace Task1
                 throw new ArgumentNullException();
             }
 
-            var result = Result;
-            return creator.Enqueue(func, result);
+            return creator.Enqueue(func, Result);
         }
     }
 }

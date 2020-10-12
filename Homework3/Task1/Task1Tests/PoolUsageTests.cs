@@ -9,7 +9,7 @@ namespace Task1Tests
     public class PoolUsageTests
     {
         const int POOL_SIZE = 1;
-        MyThreadPool pool;
+        private MyThreadPool pool;
 
         [SetUp]
         public void Setup()
