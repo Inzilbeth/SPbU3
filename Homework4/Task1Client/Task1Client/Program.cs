@@ -18,8 +18,8 @@ namespace Task1Client
                 var writer = new StreamWriter(stream);
                 var reader = new StreamReader(stream);
 
-                var path = "test.txt";
-                
+                var path = Console.ReadLine();
+
                 var data = List(path, writer, reader);
                 Console.WriteLine($"Received: {data}");
 
