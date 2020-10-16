@@ -73,6 +73,8 @@ namespace Task1Tests
         {
             var stopWatch = new Stopwatch();
             var tasks = new IMyTask<int>[POOL_SIZE];
+            var handler = new ManualResetEvent(true);
+            var count = 0;
 
             stopWatch.Start();
             for (int i = 0; i < POOL_SIZE; i++)
@@ -80,7 +82,9 @@ namespace Task1Tests
                 var localI = i;
                 tasks[localI] = pool.Enqueue(() =>
                 {
-                    Thread.Sleep(2000);
+                    count++;
+                    handler.WaitOne();
+                    handler.Reset();
                     return localI;
                 });
             }
@@ -92,51 +96,32 @@ namespace Task1Tests
                     Assert.Fail("Values didn't match");
                 }
             }
-            stopWatch.Stop();
 
-            // This is possible only if all 5 threads worked simultaneously
-            Assert.IsTrue(stopWatch.ElapsedMilliseconds < 2000 * POOL_SIZE + 1000); 
+            handler.Close();
+            Assert.AreEqual(POOL_SIZE, count);
         }
 
         [Test]
-        public void ShutdownTestOnContinuedTasks()
+        public void ShutdownTestOnContinuedTask()
         {
-            var tasks = new IMyTask<int>[POOL_SIZE + 1];
-
-            for (int i = 0; i < POOL_SIZE; i++)
-            {
-                var localI = i;
-                tasks[localI] = pool.Enqueue(() =>
-                {
-                    Thread.Sleep(2000);
-                    return localI * 10;
-                }).ContinueWith(x => x * 10);
-            }
-
-            tasks[POOL_SIZE] = pool.Enqueue(() => { Thread.Sleep(2000); return 777; });
+            var preTask = pool.Enqueue(() => 10);
 
             pool.Shutdown();
-
-            Thread.Sleep(7000);
-            int temp;
-            Assert.Throws<InvalidOperationException>(() => temp = tasks[POOL_SIZE].Result);
+            //Thread.Sleep(1000);
+            //IMyTask<int> temp;
+            //Assert.Throws<InvalidOperationException>(() => temp = preTask.ContinueWith(x => x + 10));
         }
         
         [Test]
         public void ShutdownTestOnDefaultTasks()
         {
-            var task = pool.Enqueue(() =>
-            {
-                Thread.Sleep(1000);
-                return 10 * 10;
-            });
-
-            var newTask = pool.Enqueue(() => { Thread.Sleep(2000); return 777; });
+            var preTask = pool.Enqueue(() => 777);
 
             pool.Shutdown();
 
-            int t;
-            Assert.Throws<InvalidOperationException>(() => t = newTask.Result);
+            IMyTask<int> temp; 
+         
+            Assert.Throws<InvalidOperationException>(() => temp = pool.Enqueue(() => 111));
         }
     }
 }
