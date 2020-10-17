@@ -162,8 +162,6 @@ namespace Task1Tests
 
             mre.Close();
 
-            Assert.IsTrue(exceptions.Count > 0);
-
             foreach (var e in exceptions)
             {
                 Assert.AreEqual("Pool is stopped", e.Message);
