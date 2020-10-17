@@ -149,7 +149,7 @@ namespace Task1
         
         private Thread[] threads;
         private ConcurrentQueue<Action> queue;
-        private ManualResetEvent reset;
+        private AutoResetEvent reset;
         private CancellationTokenSource cancelTokenSource;
 
         public event Action OnShutdown;
@@ -166,12 +166,13 @@ namespace Task1
             queue = new ConcurrentQueue<Action>();
 
             cancelTokenSource = new CancellationTokenSource();
-            reset = new ManualResetEvent(true);
+            reset = new AutoResetEvent(true);
 
             var token = cancelTokenSource.Token;
 
             for (int i = 0; i < size; i++)
             {
+                var local = i;
                 threads[i] = new Thread(() =>
                 {
                     while (!token.IsCancellationRequested)
@@ -183,7 +184,6 @@ namespace Task1
                         else
                         {
                             reset.WaitOne();
-                            reset.Reset();
                         }
                     }
                 });
@@ -236,7 +236,10 @@ namespace Task1
             
             OnShutdown();
 
-            reset.Close();
+            for (int i = 0; i < threads.Length; i++)
+            {
+                reset.Set();
+            }
 
             foreach (var thread in threads)
             {

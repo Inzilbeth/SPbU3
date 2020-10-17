@@ -107,9 +107,9 @@ namespace Task1Tests
             var preTask = pool.Enqueue(() => 10);
 
             pool.Shutdown();
-            //Thread.Sleep(1000);
-            //IMyTask<int> temp;
-            //Assert.Throws<InvalidOperationException>(() => temp = preTask.ContinueWith(x => x + 10));
+            Thread.Sleep(1000);
+            IMyTask<int> temp;
+            Assert.Throws<InvalidOperationException>(() => temp = preTask.ContinueWith(x => x + 10));
         }
         
         [Test]
