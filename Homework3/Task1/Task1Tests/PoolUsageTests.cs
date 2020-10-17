@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Task1;
 
 namespace Task1Tests
@@ -122,6 +124,50 @@ namespace Task1Tests
             IMyTask<int> temp; 
          
             Assert.Throws<InvalidOperationException>(() => temp = pool.Enqueue(() => 111));
+        }
+
+        [Test]
+        public void ConcurrentShutdownAndEnqueueTest()
+        {
+            var mre = new ManualResetEvent(false);
+
+            var tasks = new IMyTask<int>[POOL_SIZE];
+            var threads = new Thread[POOL_SIZE];
+            var exceptions = new List<Exception>();
+
+            for (int i = 0; i < POOL_SIZE; i++)
+            {
+                var local = i;
+                threads[local] = new Thread(() =>
+                {
+                    try
+                    {
+                        tasks[local] = pool.Enqueue(() =>
+                        {
+                            mre.WaitOne();
+                            return 100;
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                });
+                threads[local].Start();
+            }
+
+            pool.Shutdown();
+
+            Thread.Sleep(1000);
+
+            mre.Close();
+
+            Assert.IsTrue(exceptions.Count > 0);
+
+            foreach (var e in exceptions)
+            {
+                Assert.AreEqual("Pool is stopped", e.Message);
+            }    
         }
     }
 }

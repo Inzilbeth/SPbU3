@@ -233,8 +233,8 @@ namespace Task1
             {
                 cancelTokenSource.Cancel();
             }
-            
-            OnShutdown();
+
+            OnShutdown?.Invoke();
 
             for (int i = 0; i < threads.Length; i++)
             {
