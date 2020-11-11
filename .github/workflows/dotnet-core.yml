@@ -24,24 +24,24 @@ jobs:
     
     - name: Install dependencies
       run: |
-        dotnet restore Homework3\Task1\
-        dotnet restore Homework3\Task2\
-        dotnet restore Homework3\Task3\
-        dotnet restore Homework3\Task4\
-        dotnet restore Homework3\Task5\
+        dotnet restore Homework3\Task1\Task1.sln
+        dotnet restore Homework3\Task2\Task1.sln
+        dotnet restore Homework3\Task3\Task1.sln
+        dotnet restore Homework3\Task4\Task1.sln
+        dotnet restore Homework3\Task5\Task1.sln
     
     - name: Build
       run: |
-        dotnet build Homework3\Task1\ --configuration Release --no-restore
-        dotnet build Homework3\Task2\ --configuration Release --no-restore
-        dotnet build Homework3\Task3\ --configuration Release --no-restore
-        dotnet build Homework3\Task4\ --configuration Release --no-restore
-        dotnet build Homework3\Task5\ --configuration Release --no-restore
+        dotnet build Homework3\Task1\Task1.sln --configuration Release --no-restore
+        dotnet build Homework3\Task2\Task1.sln --configuration Release --no-restore
+        dotnet build Homework3\Task3\Task1.sln --configuration Release --no-restore
+        dotnet build Homework3\Task4\Task1.sln --configuration Release --no-restore
+        dotnet build Homework3\Task5\Task1.sln --configuration Release --no-restore
     
     - name: Test
       run: |
-        dotnet test Homework3\Task1\ --no-restore --verbosity normal
-        dotnet test Homework3\Task2\ --no-restore --verbosity normal
-        dotnet test Homework3\Task3\ --no-restore --verbosity normal
-        dotnet test Homework3\Task4\ --no-restore --verbosity normal
-        dotnet test Homework3\Task5\ --no-restore --verbosity normal
+        dotnet test Homework3\Task1\Task1.sln --no-restore --verbosity normal
+        dotnet test Homework3\Task2\Task1.sln --no-restore --verbosity normal
+        dotnet test Homework3\Task3\Task1.sln --no-restore --verbosity normal
+        dotnet test Homework3\Task4\Task1.sln --no-restore --verbosity normal
+        dotnet test Homework3\Task5\Task1.sln --no-restore --verbosity normal
