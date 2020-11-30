@@ -5,6 +5,7 @@ on:
     branches: 
       - homework*
       - master
+      - test*
   pull_request:
     branches: 
       - master
