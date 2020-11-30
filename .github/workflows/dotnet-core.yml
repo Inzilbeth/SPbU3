@@ -3,26 +3,31 @@ name: .NET Core
 on:
   push:
     branches: 
-      - master
       - homework*
+      - master
   pull_request:
     branches: 
       - master
+      - homework*
     
 jobs:
   build:
-
+    
     runs-on: windows-latest
-
+    
     steps:
     - uses: actions/checkout@v2
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.301
+    
     - name: Install dependencies
-      run: dotnet restore Homework3\Task1\
+      run: dotnet restore Homework4\Test1
+    
     - name: Build
-      run: dotnet build Homework3\Task1\ --configuration Release --no-restore
+      run: dotnet build Homework4\Test1\ --configuration Release --no-restore
+    
     - name: Test
-      run: dotnet test Homework3\Task1\ --no-restore --verbosity normal
+      run: dotnet test Homework4\Test1\ --no-restore --verbosity normal
