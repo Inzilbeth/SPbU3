@@ -3,11 +3,12 @@ name: .NET Core
 on:
   push:
     branches: 
-      - master
       - homework*
+      - master
   pull_request:
     branches: 
       - master
+      - homework*
     
 jobs:
   build:
@@ -23,25 +24,11 @@ jobs:
         dotnet-version: 3.1.301
     
     - name: Install dependencies
-      run: |
-        dotnet restore Homework3\Task1\Task1.sln
-        dotnet restore Homework3\Task2\Task1.sln
-        dotnet restore Homework3\Task3\Task1.sln
-        dotnet restore Homework3\Task4\Task1.sln
-        dotnet restore Homework3\Task5\Task1.sln
+      run: dotnet restore Homework4\Task1
     
     - name: Build
-      run: |
-        dotnet build Homework3\Task1\Task1.sln --configuration Release --no-restore
-        dotnet build Homework3\Task2\Task1.sln --configuration Release --no-restore
-        dotnet build Homework3\Task3\Task1.sln --configuration Release --no-restore
-        dotnet build Homework3\Task4\Task1.sln --configuration Release --no-restore
-        dotnet build Homework3\Task5\Task1.sln --configuration Release --no-restore
+      run: dotnet build Homework4\Task1\ --configuration Release --no-restore
     
     - name: Test
-      run: |
-        dotnet test Homework3\Task1\Task1.sln --no-restore --verbosity normal
-        dotnet test Homework3\Task2\Task1.sln --no-restore --verbosity normal
-        dotnet test Homework3\Task3\Task1.sln --no-restore --verbosity normal
-        dotnet test Homework3\Task4\Task1.sln --no-restore --verbosity normal
-        dotnet test Homework3\Task5\Task1.sln --no-restore --verbosity normal
+      run: dotnet test Homework4\Task1\ --no-restore --verbosity normal
+
