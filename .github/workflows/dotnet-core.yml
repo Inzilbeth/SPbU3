@@ -30,4 +30,4 @@ jobs:
       run: dotnet build Test1\Task1\ --configuration Release --no-restore
     
     - name: Test
-      run: dotnet test Test\Task1\ --no-restore --verbosity normal
+      run: dotnet test Test1\Task1\ --no-restore --verbosity normal
