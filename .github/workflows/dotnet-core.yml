@@ -3,7 +3,6 @@ name: .NET Core
 on:
   push:
     branches: 
-      - master
       - homework*
   pull_request:
     branches: 
@@ -23,10 +22,10 @@ jobs:
         dotnet-version: 3.1.301
     
     - name: Install dependencies
-      run: before_build.bat
+      run: dotnet restore Homework4\Task1
     
     - name: Build
-      run: build.bat
+      run: dotnet build Homework4\Task1\ --configuration Release --no-restore
     
     - name: Test
-      run: test.bat
+      run: dotnet test Homework4\Task1\ --no-restore --verbosity normal
