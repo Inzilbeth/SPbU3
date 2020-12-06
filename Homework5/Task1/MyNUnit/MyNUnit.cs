@@ -6,6 +6,7 @@ using System.Reflection;
 using System.IO;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using MyNUnitAttributes;
 
 namespace MyNUnitLib
 {
@@ -85,17 +86,18 @@ namespace MyNUnitLib
         /// Loads all the types from the assemblies inside the specified directory.
         /// </summary>
         private static IEnumerable<Type> GetTypes(string path)
-            => GetAssemblyPaths(path).Select(Assembly.LoadFrom).SelectMany(a => a.ExportedTypes).Where(t => t.IsClass);
+            => GetAssemblyPaths(path).AsParallel().Select(Assembly.LoadFrom).SelectMany(a => a.ExportedTypes).Where(t => t.IsClass);
 
         /// <summary>
         /// Finds all the assemblies except for the testing library within a directory and gets their paths.
         /// </summary>
-        /// <returns>A collcection of paths.</returns>
+        /// <returns>A collecction of paths.</returns>
         private static IEnumerable<string> GetAssemblyPaths(string path)
         {
             var result = Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)
                 .Concat(Directory.EnumerateFiles(path, "*.exe", SearchOption.AllDirectories)).ToList();
             result.RemoveAll(assemblyPath => assemblyPath.Contains("\\MyNUnit.exe"));
+            result.RemoveAll(assemblyPath => assemblyPath.Contains("\\MyNUnitAttributes.dll"));
             return result;
         }
 
@@ -119,10 +121,8 @@ namespace MyNUnitLib
                     ExecuteUtilityMethod(beforeClassMethod, null);
                 }
 
-                foreach (var testMethod in methodsToTest[type].TestMethods)
-                {
-                    ExecuteTestMethod(type, testMethod);
-                }
+                Parallel.ForEach(methodsToTest[type].TestMethods, testMethod =>
+                    ExecuteTestMethod(type, testMethod));
 
                 foreach (var afterClassMethod in methodsToTest[type].AfterClassTestMethods)
                 {
@@ -147,13 +147,13 @@ namespace MyNUnitLib
                 throw new FormatException($"{type.Name} must have parameterless constructor");
             }
 
-            var instance = emptyConstructor.Invoke(null);
-
             if (attribute.IsIgnored)
             {
                 testResults[type].Add(new TestInfo(method.Name, attribute.IgnoreMessage));
                 return;
             }
+
+            var instance = emptyConstructor.Invoke(null);
 
             foreach (var beforeTestMethod in methodsToTest[type].BeforeTestMethods)
             {
@@ -232,9 +232,9 @@ namespace MyNUnitLib
                     Console.WriteLine();
                     Console.WriteLine($"Tested method: {testInfo.MethodName}().");
 
-                    if (testInfo.IsIgnored == true)
+                    if (testInfo.IsIgnored)
                     {
-                        Console.WriteLine($"Ignored {testInfo.MethodName}() with message: {testInfo.IgnoranceReason}.");
+                        Console.WriteLine($"Ignored {testInfo.MethodName}() with message: {testInfo.ReasonToIgnore}.");
                         Console.ResetColor();
                         continue;
                     }
@@ -255,7 +255,7 @@ namespace MyNUnitLib
                         }
                     }
 
-                    Console.WriteLine($"Ellapsed time: {testInfo.Time}.");
+                    Console.WriteLine($"Elapsed time: {testInfo.Time}.");
 
                     if (testInfo.IsSuccessful)
                     {

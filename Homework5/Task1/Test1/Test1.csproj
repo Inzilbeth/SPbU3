@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyNUnit\MyNUnit.csproj" />
+    <ProjectReference Include="..\MyNUnitAttributes\MyNUnitAttributes.csproj" />
   </ItemGroup>
 
 </Project>

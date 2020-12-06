@@ -35,7 +35,7 @@ namespace MyNUnitLib
         /// <summary>
         /// If the test is ignored, this string explains why. Otherwise is empty.
         /// </summary>
-        public string IgnoranceReason { get; private set; }
+        public string ReasonToIgnore { get; private set; }
 
         /// <summary>
         /// Amount of time testing has taken.
@@ -50,7 +50,7 @@ namespace MyNUnitLib
             IsIgnored = true;
 
             MethodName = name;
-            IgnoranceReason = ignoranceReason;
+            ReasonToIgnore = ignoranceReason;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace MyNUnitLib
         public TestInfo(string name, bool isSuccessful, Type expectedException, Type actualException, TimeSpan time)
         {
             IsIgnored = false;
-            IgnoranceReason = "";
+            ReasonToIgnore = "";
 
             MethodName = name;
             IsSuccessful = isSuccessful;

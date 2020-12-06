@@ -89,7 +89,7 @@ namespace Tests
             var exceptionIgnoreInfo = TestsResults.Find(i => i.MethodName == "IgnoreMethodThrowingException");
 
             Assert.IsTrue(ignoreInfo.IsIgnored);
-            Assert.AreEqual("Some reason to ignore this test.", ignoreInfo.IgnoranceReason);
+            Assert.AreEqual("Some reason to ignore this test.", ignoreInfo.ReasonToIgnore);
             Assert.IsTrue(exceptionIgnoreInfo.IsIgnored);
         }
 
@@ -131,8 +131,8 @@ namespace Tests
 
             var failInfo = TestsResults.Find(i => i.MethodName == "ExceptionOnFail");
 
-            Assert.AreEqual(null, failInfo.ExpectedException);
-            Assert.AreNotEqual(null, failInfo.ActualException);
+            Assert.IsNull(failInfo.ExpectedException);
+            Assert.IsNotNull(failInfo.ActualException);
             Assert.IsFalse(failInfo.IsSuccessful);
         }
 

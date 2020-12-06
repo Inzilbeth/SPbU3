@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
+using MyNUnitAttributes;
 
 namespace MyNUnitLib
 {
@@ -10,11 +11,11 @@ namespace MyNUnitLib
     /// </summary>
     public class ClassMethods
     {
-        public ConcurrentQueue<MethodInfo> BeforeClassTestMethods;
-        public ConcurrentQueue<MethodInfo> BeforeTestMethods;
-        public ConcurrentQueue<MethodInfo> TestMethods;
-        public ConcurrentQueue<MethodInfo> AfterTestMethods;
-        public ConcurrentQueue<MethodInfo> AfterClassTestMethods;
+        public ConcurrentQueue<MethodInfo> BeforeClassTestMethods { get; private set; }
+        public ConcurrentQueue<MethodInfo> BeforeTestMethods { get; private set; }
+        public ConcurrentQueue<MethodInfo> TestMethods { get; private set; }
+        public ConcurrentQueue<MethodInfo> AfterTestMethods { get; private set; }
+        public ConcurrentQueue<MethodInfo> AfterClassTestMethods { get; private set; }
 
         /// <summary>
         /// Amount of methods to test in a class.

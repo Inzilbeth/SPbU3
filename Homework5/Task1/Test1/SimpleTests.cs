@@ -1,5 +1,5 @@
 ﻿using System;
-using MyNUnitLib;
+using MyNUnitAttributes;
 
 namespace Test1
 {

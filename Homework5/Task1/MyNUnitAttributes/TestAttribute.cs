@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyNUnitLib
+namespace MyNUnitAttributes
 {
     /// <summary>
     /// Attribute for marking test methods.
