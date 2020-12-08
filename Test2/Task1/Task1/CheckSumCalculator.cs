@@ -22,7 +22,10 @@ namespace Task1
 
                 using (var md = MD5.Create())
                 {
-                    temp.Concat(Encoding.ASCII.GetBytes(Path.GetDirectoryName(path)));
+                    if (Path.GetDirectoryName(path) != null)
+                    {
+                        temp.Concat(Encoding.ASCII.GetBytes(Path.GetDirectoryName(path)));
+                    }
                 }
 
                 foreach (var entry in Directory.EnumerateFileSystemEntries(path))
@@ -79,7 +82,7 @@ namespace Task1
             {
                 using (var md = MD5.Create())
                 {
-                    var buffer = new byte[1024];
+                    var buffer = new byte[10240];
                     int bytesRead = 0;
                     int bytesRecieved = 0;
 

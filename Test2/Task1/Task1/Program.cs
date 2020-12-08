@@ -14,7 +14,7 @@ namespace Task1
             stopWatch.Start();
             var hash1 = CheckSumCalculator.ComputeHash(path);
             stopWatch.Stop();
-            var time1 = stopWatch.ElapsedMilliseconds;
+            var time1 = stopWatch.Elapsed;
 
             stopWatch.Reset();
 
@@ -23,8 +23,8 @@ namespace Task1
             stopWatch.Stop();
             var time2 = stopWatch.Elapsed;
 
-            Console.WriteLine($"Hash & elapsed time in ms for simple algo: {hash1}, {time1}");
-            Console.WriteLine($"Hash & elapsed time in ms for Parallel algo: {hash2}, {time2}");
+            Console.WriteLine($"Hash & elapsed time in ms for simple algo: {BitConverter.ToString(hash1)}, {time1}");
+            Console.WriteLine($"Hash & elapsed time in ms for Parallel algo: {BitConverter.ToString(hash2)}, {time2}");
         }
     }
 }
