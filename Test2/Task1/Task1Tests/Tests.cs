@@ -9,6 +9,7 @@ namespace Task1Tests
     {
         string path1;
         string path2;
+        string path3;
 
         [SetUp]
         public void Setup()
@@ -16,6 +17,7 @@ namespace Task1Tests
             var root = Directory.GetCurrentDirectory();
             path1 = root + "\\Example\\Folder";
             path2 = root + "\\Example\\utilityDirectory\\Folder";
+            path3 = root;
         }
 
         [Test]
