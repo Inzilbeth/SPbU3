@@ -5,20 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="650" MinHeight="650" MinWidth="650" MaxHeight="650" MaxWidth="650">
+        Title="MainWindow" Height="650" Width="650" MinHeight="650" MinWidth="650">
     <Grid Margin="10,10,10,-6">
         <Grid x:Name="FormField" Margin="90,49,112,144">
-            <Button x:Name="Button00" Content="" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
-            <Button x:Name="Button01" Content="" HorizontalAlignment="Left" Margin="147,10,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
-            <Button x:Name="Button02" Content="" HorizontalAlignment="Left" Margin="290,10,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
-            <Button x:Name="Button10" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick" Margin="12,146,0,0"/>
-            <Button x:Name="Button11" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick" Margin="147,146,0,0"/>
-            <Button x:Name="Button12" Content="" VerticalAlignment="Top" Height="100" Click="ButtonClick" Margin="290,146,0,0" HorizontalAlignment="Left" Width="100"/>
-            <Button x:Name="Button20" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick" Margin="10,288,0,0"/>
-            <Button x:Name="Button21" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick" Margin="147,288,0,0"/>
-            <Button x:Name="Button22" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick" Margin="290,288,0,0"/>
+            <Button x:Name="Button00" Content="" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
+            <Button x:Name="Button01" Content="" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
+            <Button x:Name="Button02" Content="" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
+            <Button x:Name="Button10" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
+            <Button x:Name="Button11" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
+            <Button x:Name="Button12" Content="" VerticalAlignment="Center" Height="100" Click="ButtonClick" Margin="0,0,0,0" HorizontalAlignment="Right" Width="100"/>
+            <Button x:Name="Button20" Content="" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
+            <Button x:Name="Button21" Content="" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
+            <Button x:Name="Button22" Content="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
         </Grid>
-        <Label x:Name="StatusTxt" Content="" HorizontalAlignment="Center" Margin="0,452,0,0" VerticalAlignment="Top" Height="34" Width="154"/>
-        <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Left" Margin="193,514,0,0" VerticalAlignment="Top" Height="32" Width="174" Click="ResetClick"/>
+        <Label x:Name="StatusTxt" Content="" HorizontalAlignment="Center" Margin="0,495,0,101" Width="154"/>
+        <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Center" Margin="0,563,0,0" VerticalAlignment="Top" Height="32" Width="174" Click="ResetClick"/>
     </Grid>
 </Window>

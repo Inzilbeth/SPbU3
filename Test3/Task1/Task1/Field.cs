@@ -4,8 +4,14 @@ using System.Text;
 
 namespace Task1
 {
+    /// <summary>
+    /// Class for processing main tictactoe field.
+    /// </summary>
     public class Field
     {
+        /// <summary>
+        /// Represents status type.
+        /// </summary>
         public enum Status
         {
             InProgress,
@@ -23,9 +29,15 @@ namespace Task1
             Reset();
         }
 
+        /// <summary>
+        /// Gets current status.
+        /// </summary>
         public Status GetStatus()
             => status;
 
+        /// <summary>
+        /// Resets the field.
+        /// </summary>
         public void Reset()
         {
             status = Status.InProgress;
@@ -39,6 +51,9 @@ namespace Task1
             }
         }
 
+        /// <summary>
+        /// Adds a new sign to the field.
+        /// </summary>
         public bool Add(int i, int j, Cell type)
         {
             if (type == Cell.Empty ||
@@ -57,9 +72,15 @@ namespace Task1
             return true;
         }
 
+        /// <summary>
+        /// Checks if coords are on field.
+        /// </summary>
         private bool IsOnField(int i, int j)
             => i >= 0 && i < 3 && j >= 0 && j < 3;
 
+        /// <summary>
+        /// Updates the status of the field.
+        /// </summary>
         private void UpdateStatus()
         {
             for (int i = 0; i < 3; i++)

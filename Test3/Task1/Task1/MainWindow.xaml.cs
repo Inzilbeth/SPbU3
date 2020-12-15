@@ -36,6 +36,9 @@ namespace Task1
             }
         }
 
+        /// <summary>
+        /// Method for field buttons click.
+        /// </summary>
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -51,9 +54,15 @@ namespace Task1
             StatusTxt.Content = gameManager.GetStatus().ToString();
         }
 
+        /// <summary>
+        /// Gets coordinates from the button's name.
+        /// </summary>
         private (int, int) GetCoordinates(string name)
             => (int.Parse(name[6].ToString()), int.Parse(name[7].ToString()));
 
+        /// <summary>
+        /// Method for reset button click.
+        /// </summary>
         private void ResetClick(object sender, RoutedEventArgs e)
         {
             gameManager.Reset();
