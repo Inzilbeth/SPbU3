@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Task1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="650" MinHeight="650" MinWidth="650">
+        Title="MainWindow" Height="650" Width="650" MinHeight="650" MinWidth="650" MaxHeight="650" MaxWidth="650">
     <Grid Margin="10,10,0,-16">
         <Grid x:Name="FormField" Margin="90,49,112,144">
             <Button x:Name="Button00" Content="" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="100" Width="100" Click="ButtonClick"/>
@@ -18,7 +18,7 @@
             <Button x:Name="Button21" Content="" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
             <Button x:Name="Button22" Content="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="100" Width="100" Click="ButtonClick" Margin="0,0,0,0"/>
         </Grid>
-        <Label x:Name="StatusTxt" Content="none" HorizontalAlignment="Center" Margin="0,508,0,88" Width="154"/>
+        <Label x:Name="StatusTxt" Content="NotStarted" HorizontalAlignment="Center" Margin="0,508,0,88" Width="154"/>
         <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Center" Margin="0,563,0,0" VerticalAlignment="Top" Height="32" Width="174" Click="ResetClick"/>
     </Grid>
 </Window>
