@@ -12,9 +12,9 @@ namespace Task1Server
     /// </summary>
     public class Server
     {
-        private IPAddress localAddress = IPAddress.Parse("127.0.0.1");
-        private TcpListener listener;
-        private CancellationTokenSource cts;
+        private readonly IPAddress localAddress = IPAddress.Parse("127.0.0.1");
+        private readonly TcpListener listener;
+        private readonly CancellationTokenSource cts;
 
         /// <summary>
         /// Sets up a server using the selected port.
@@ -36,9 +36,7 @@ namespace Task1Server
 
                 while (!cts.IsCancellationRequested)
                 {
-                    var client = await listener.AcceptTcpClientAsync();
-
-                    HandleClientCommunication(client);
+                    HandleClientCommunication();
                 }
             }
             catch (IOException e)
@@ -55,7 +53,7 @@ namespace Task1Server
         {
             try
             {
-                if (client != null && client.Client != null && client.Client.Connected)
+                if (client?.Client != null && client.Client.Connected)
                 {
                     if (client.Client.Poll(0, SelectMode.SelectRead))
                     {
@@ -80,11 +78,12 @@ namespace Task1Server
         /// <summary>
         /// Handles requests incoming from client.
         /// </summary>
-        /// <param name="client"></param>
-        private void HandleClientCommunication(TcpClient client)
+        private void HandleClientCommunication()
         {
             Task.Run(async () =>
             {
+                using var client = await listener.AcceptTcpClientAsync();
+
                 while (!cts.IsCancellationRequested)
                 {
                     if (!IsConnected(client))
@@ -92,12 +91,12 @@ namespace Task1Server
                         break;
                     }
 
-                    var reader = new StreamReader(client.GetStream());
-                    var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+                    using var reader = new StreamReader(client.GetStream());
+                    using var writer = new StreamWriter(client.GetStream()) {AutoFlush = true};
 
-                    var recieved = await reader.ReadLineAsync();
+                    var received = await reader.ReadLineAsync();
 
-                    await RequestHandler.HandleRequest(recieved, writer);
+                    await RequestHandler.HandleRequest(received, writer);
                 }
             });
         }
@@ -109,10 +108,7 @@ namespace Task1Server
         {
             cts.Cancel();
 
-            if (listener != null)
-            {
-                listener.Stop();
-            }
+            listener?.Stop();
         }
     }
 }

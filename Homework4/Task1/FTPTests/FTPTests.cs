@@ -1,14 +1,15 @@
-﻿using Task1Client;
-using Task1Server;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
+using Task1Client;
+using Task1Server;
 
-namespace Tests
+namespace FTPTests
 {
-    public class FTPTests
+    public class FtpTests
     {
         private Server server;
         private Client client;
@@ -46,7 +47,7 @@ namespace Tests
         }
 
         [Test]
-        public void ListFunctionalityTest()
+        public async Task ListFunctionalityTest()
         {
             Task.Run(async () => await server.Start());
 
@@ -95,14 +96,14 @@ namespace Tests
             Assert.Throws<AggregateException>(() =>
             {
                 var res = client.List("nonexistant").Result;
-
-                server.Stop();
-                client.Stop();
             });
+
+            server.Stop();
+            client.Stop();
         }
 
         [Test]
-        public void GetFunctionalityTest()
+        public async Task GetFunctionalityTest()
         {
             var pathToSavedFile = Path.Combine(savedFilesPath, "testTxt.txt");
 
@@ -111,9 +112,9 @@ namespace Tests
                 File.Delete(pathToSavedFile);
             }
 
-            Task.Run(async () =>
+            await Task.Run(async () =>
             {
-                await server.Start();
+                Task.Run(async () => server.Start());
 
                 client.Connect();
 
@@ -146,7 +147,7 @@ namespace Tests
         }
 
         [Test]
-        public void SimoltaneousRequestsTest()
+        public void SimultaneousRequestsTest()
         {
             var pathToFile = Path.Combine(savedFilesPath, "testPng.png");
 

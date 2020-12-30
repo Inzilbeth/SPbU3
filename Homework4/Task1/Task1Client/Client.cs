@@ -11,8 +11,8 @@ namespace Task1Client
     /// </summary>
     public class Client : IDisposable
     {
-        private string server;
-        private int port;
+        private readonly string server;
+        private readonly int port;
         private TcpClient client;
 
         /// <summary>
@@ -35,47 +35,10 @@ namespace Task1Client
         /// <summary>
         /// Simple demonstration of functionality.
         /// </summary>
-        public async Task Start()
-        {
-            Connect();
-            Console.WriteLine("- Connected");
-
-            while (true)
-            {
-                var input = Console.ReadLine();
-
-                if (input == "stop")
-                {
-                    Stop();
-                    Console.WriteLine("- Disconnected");
-                    break;
-                }
-
-                try
-                {
-                    if (input[0] == '1')
-                    {
-                        var res = await List(input);
-
-                        foreach (var e in res.Item2)
-                        {
-                            Console.WriteLine(e);
-                        }
-                    }
-                    else if (input[0] == '2')
-                    {
-                        await Get(input, "");
-                    }
-                }
-                catch (Exception e) when (e is SocketException || e is IOException)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-        }
+        public async Task Start() => Connect();
 
         /// <summary>
-        /// Request for a files and foldrs list by directory.
+        /// Request for a files and folders list by directory.
         /// </summary>
         /// <returns>List of (name, folder - true / file - false) </returns>
         public async Task<(int, List<(string, bool)>)> List(string path)
@@ -98,10 +61,10 @@ namespace Task1Client
         public async Task Get(string pathFrom, string pathTo)
         {
             var temp = pathFrom.Split('\\');
-            var fileName = temp[temp.Length - 1];
+            var fileName = temp[^1];
 
-            var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
-            var reader = new StreamReader(client.GetStream());
+            using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+            using var reader = new StreamReader(client.GetStream());
 
             await writer.WriteLineAsync("2" + pathFrom);
 
@@ -117,26 +80,18 @@ namespace Task1Client
                 throw new FileNotFoundException();
             }
 
-            using (var fileStream = new FileStream(pathTo + fileName, FileMode.CreateNew))
-            {
-                await reader.BaseStream.CopyToAsync(fileStream);
-            }
+            using var fileStream = new FileStream(pathTo + fileName, FileMode.CreateNew);
+            await reader.BaseStream.CopyToAsync(fileStream);
         }
 
         /// <summary>
         /// Stops client.
         /// </summary>
-        public void Stop()
-        {
-            client.Close();
-        }
+        public void Stop() => client.Close();
 
         /// <summary>
         /// Frees resources.
         /// </summary>
-        public void Dispose()
-        {
-            client.Dispose();
-        }
+        public void Dispose() => client.Dispose();
     }
 }

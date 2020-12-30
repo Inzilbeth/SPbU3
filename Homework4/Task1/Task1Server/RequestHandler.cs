@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,28 +13,33 @@ namespace Task1Server
         /// <summary>
         /// Gets the string and writes it to the stream.
         /// </summary>
-        public async static Task HandleRequest(string request, StreamWriter writer)
+        public static async Task HandleRequest(string request, StreamWriter writer)
         {
             if (int.TryParse(request[0].ToString(), out var id))
             {
-                var rootPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName, "storage\\");
+                var rootPath =
+                    Path.Combine(
+                        Directory.GetParent(Directory.GetCurrentDirectory()).Parent?.FullName ??
+                        throw new InvalidOperationException(), "storage\\");
                 var path = Path.Combine(rootPath, request.Remove(0, 1));
 
-                if (id == 1)
+                switch (id)
                 {
-                    var offset = rootPath.Length;
-                    await HandleListRequest(path, offset, writer);
-                }
-
-                if (id == 2)
-                {
-                    await HandleGetRequest(path, writer);
+                    case 1:
+                    {
+                        var offset = rootPath.Length;
+                        await HandleListRequest(path, offset, writer);
+                        break;
+                    }
+                    case 2:
+                        await HandleGetRequest(path, writer);
+                        break;
                 }
 
                 return;
             }
 
-            var errorText = "Wrong format error";
+            const string errorText = "Wrong format error";
             await writer.WriteLineAsync(errorText);
         }
 
@@ -44,7 +50,7 @@ namespace Task1Server
         {
             if (!Directory.Exists(path))
             {
-                var errorResponse = "-1";
+                const string errorResponse = "-1";
                 await writer.WriteLineAsync(errorResponse);
                 return;
             }
@@ -86,10 +92,8 @@ namespace Task1Server
             var size = new FileInfo(path).Length;
             await writer.WriteLineAsync($"{size}");
 
-            using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
-            {
-                await fileStream.CopyToAsync(writer.BaseStream);
-            }
+            await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite);
+            await fileStream.CopyToAsync(writer.BaseStream);
         }
     }
 }
