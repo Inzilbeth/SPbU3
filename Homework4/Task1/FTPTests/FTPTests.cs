@@ -106,6 +106,7 @@ namespace FTPTests
         public async Task GetFunctionalityTest()
         {
             var pathToSavedFile = Path.Combine(savedFilesPath, "testTxt.txt");
+            Directory.CreateDirectory(savedFilesPath);
 
             if (File.Exists(pathToSavedFile))
             {
@@ -125,6 +126,7 @@ namespace FTPTests
                 Assert.IsTrue(File.Exists(pathToSavedFile));
 
                 File.Delete(pathToSavedFile);
+                Directory.Delete(savedFilesPath);
 
                 client.Stop();
             });
