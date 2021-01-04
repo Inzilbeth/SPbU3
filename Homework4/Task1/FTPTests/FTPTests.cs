@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Task1Client;
@@ -49,7 +48,9 @@ namespace FTPTests
         [Test]
         public async Task ListFunctionalityTest()
         {
-            Task.Run(() => server.Start());
+            //Task.Run(() => server.Start());
+            server.Start();
+
 
             int amount;
             List<(string, bool)> list;
@@ -133,7 +134,7 @@ namespace FTPTests
                 File.Delete(pathToSavedFile);
             }
 
-            Task.Run(async () => server.Start());
+            Task.Run(() => server.Start());
 
             try
             {
