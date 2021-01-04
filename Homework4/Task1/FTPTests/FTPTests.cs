@@ -11,6 +11,7 @@ namespace FTPTests
     public class FtpTests
     {
         private Server server;
+        private Task start;
         private Client client;
 
         private string address;
@@ -33,6 +34,8 @@ namespace FTPTests
             savedFilesPath = Path.Combine(rootPath, PathToSavedFolder);
 
             server = new Server(port);
+            start = Task.Run(() => server.Start());
+            
             client = new Client(address, port);
 
             expectedRequestList = new List<(string, bool)>();
@@ -48,10 +51,6 @@ namespace FTPTests
         [Test]
         public async Task ListFunctionalityTest()
         {
-            //Task.Run(() => server.Start());
-            server.Start();
-
-
             int amount;
             List<(string, bool)> list;
 
@@ -77,8 +76,6 @@ namespace FTPTests
         [Test]
         public async Task ListNestedFoldersTest()
         {
-            Task.Run(() => server.Start());
-
             int amount;
             List<(string, bool)> list;
 
@@ -105,8 +102,6 @@ namespace FTPTests
         [Test]
         public void ListNonexistantDirectoryThrowsTest()
         {
-            Task.Run(() => server.Start());
-
             try
             {
                 client.Connect();
@@ -134,8 +129,6 @@ namespace FTPTests
                 File.Delete(pathToSavedFile);
             }
 
-            Task.Run(() => server.Start());
-
             try
             {
                 client.Connect();
@@ -157,8 +150,6 @@ namespace FTPTests
         [Test]
         public void GetNonexistantFileTest()
         {
-            Task.Run(() => server.Start());
-
             try
             {
                 client.Connect();
@@ -183,8 +174,6 @@ namespace FTPTests
 
             Task.Run(async () =>
             {
-                server.Start();
-
                 List <(string, bool)> list;
 
                 try
@@ -207,6 +196,12 @@ namespace FTPTests
                     Assert.AreEqual(expectedRequestListFolder[i], list[i]);
                 }
             });
+        }
+
+        [TearDown]
+        public async Task AwaitTask()
+        {
+            await start;
         }
     }
 }
