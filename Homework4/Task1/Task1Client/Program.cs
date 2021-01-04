@@ -56,9 +56,9 @@ namespace Task1Client
                         {
                             case '1':
                             {
-                                var res = await client.List(input);
+                                var (_, list) = await client.List(input);
 
-                                foreach (var e in res.Item2)
+                                foreach (var e in list)
                                 {
                                     Console.WriteLine(e);
                                 }
