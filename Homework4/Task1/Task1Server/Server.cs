@@ -28,7 +28,7 @@ namespace Task1Server
         /// <summary>
         /// Launch the server.
         /// </summary>
-        public async Task Start()
+        public void Start()
         {
             try
             {

@@ -90,7 +90,7 @@ namespace Task1Server
             }
 
             var size = new FileInfo(path).Length;
-            await writer.WriteLineAsync($"{size}");
+            await writer.WriteAsync($"{size} ");
 
             await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite);
             await fileStream.CopyToAsync(writer.BaseStream);

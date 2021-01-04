@@ -35,7 +35,7 @@ namespace Task1Client
         /// <summary>
         /// Simple demonstration of functionality.
         /// </summary>
-        public async Task Start() => Connect();
+        public void Start() => Connect();
 
         /// <summary>
         /// Request for a files and folders list by directory.
@@ -43,8 +43,8 @@ namespace Task1Client
         /// <returns>List of (name, folder - true / file - false) </returns>
         public async Task<(int, List<(string, bool)>)> List(string path)
         {
-            var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
-            var reader = new StreamReader(client.GetStream());
+            await using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+            using var reader = new StreamReader(client.GetStream());
 
             await writer.WriteLineAsync("1" + path);
 
@@ -63,14 +63,14 @@ namespace Task1Client
             var temp = pathFrom.Split('\\');
             var fileName = temp[^1];
 
-            using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+            await using var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
             using var reader = new StreamReader(client.GetStream());
 
             await writer.WriteLineAsync("2" + pathFrom);
 
             var response = await reader.ReadLineAsync();
 
-            if (!long.TryParse(response, out long fileSize))
+            if (!long.TryParse(response, out var fileSize))
             {
                 throw new Exception(response);
             }
@@ -80,7 +80,7 @@ namespace Task1Client
                 throw new FileNotFoundException();
             }
 
-            using var fileStream = new FileStream(pathTo + fileName, FileMode.CreateNew);
+            await using var fileStream = new FileStream(pathTo + fileName, FileMode.CreateNew);
             await reader.BaseStream.CopyToAsync(fileStream);
         }
 

@@ -18,7 +18,7 @@ namespace FTPTests
         private int port;
 
         private string rootPath = "..\\..\\..\\..";
-        private string pathToSavedFolder = "\\Downloads\\";
+        private const string PathToSavedFolder = "\\Downloads\\";
         private string savedFilesPath;
 
         private List<(string, bool)> expectedRequestList;
@@ -31,7 +31,7 @@ namespace FTPTests
             address = "127.0.0.1";
 
             rootPath = Path.GetFullPath(rootPath);
-            savedFilesPath = Path.Combine(rootPath, pathToSavedFolder);
+            savedFilesPath = Path.Combine(rootPath, PathToSavedFolder);
 
             server = new Server(port);
             client = new Client(address, port);
@@ -49,57 +49,77 @@ namespace FTPTests
         [Test]
         public async Task ListFunctionalityTest()
         {
-            Task.Run(async () => await server.Start());
+            Task.Run(() => server.Start());
 
-            client.Connect();
+            int amount;
+            List<(string, bool)> list;
 
-            var response = client.List("Example").Result;
-
-            server.Stop();
-            client.Stop();
+            try
+            {
+                client.Connect();
+                (amount, list) = await client.List("Example");
+            }
+            finally
+            {
+                server.Stop();
+                client.Stop();
+            }
 
             for (var i = 0; i < expectedRequestList.Count; ++i)
             {
-                Assert.AreEqual(expectedRequestList[i], response.Item2[i]);
+                Assert.AreEqual(expectedRequestList[i], list[i]);
             }
 
-            Assert.AreEqual(3, response.Item1);
+            Assert.AreEqual(3, amount);
         }
 
         [Test]
-        public void ListNestedFoldersTest()
+        public async Task ListNestedFoldersTest()
         {
-            Task.Run(async () => await server.Start());
+            Task.Run(() => server.Start());
 
-            client.Connect();
+            int amount;
+            List<(string, bool)> list;
 
-            var response = client.List("Example\\testFolder").Result;
+            try
+            {
+                client.Connect();
 
-            server.Stop();
-            client.Stop();
+                (amount, list) = await client.List("Example\\testFolder");
+            }
+            finally
+            {
+                server.Stop();
+                client.Stop();
+            }
 
             for (var i = 0; i < expectedRequestListFolder.Count; ++i)
             {
-                Assert.AreEqual(expectedRequestListFolder[i], response.Item2[i]);
+                Assert.AreEqual(expectedRequestListFolder[i], list[i]);
             }
 
-            Assert.AreEqual(1, response.Item1);
+            Assert.AreEqual(1, amount);
         }
 
         [Test]
         public void ListNonexistantDirectoryThrowsTest()
         {
-            Task.Run(async () => await server.Start());
+            Task.Run(() => server.Start());
 
-            client.Connect();
-
-            Assert.Throws<AggregateException>(() =>
+            try
             {
-                var res = client.List("nonexistant").Result;
-            });
+                client.Connect();
 
-            server.Stop();
-            client.Stop();
+                Assert.Throws<AggregateException>(() =>
+                {
+                    var res = client.List("nonexistant").Result;
+                });
+            }
+            finally
+            {
+                server.Stop();
+                client.Stop();
+            }
         }
 
         [Test]
@@ -113,14 +133,15 @@ namespace FTPTests
                 File.Delete(pathToSavedFile);
             }
 
-            await Task.Run(async () =>
+            Task.Run(async () => server.Start());
+
+            try
             {
-                Task.Run(async () => server.Start());
-
                 client.Connect();
-
                 await client.Get("Example\\testTxt.txt", savedFilesPath);
-
+            }
+            finally
+            {
                 server.Stop();
 
                 Assert.IsTrue(File.Exists(pathToSavedFile));
@@ -129,23 +150,24 @@ namespace FTPTests
                 Directory.Delete(savedFilesPath);
 
                 client.Stop();
-            });
+            }
         }
 
         [Test]
         public void GetNonexistantFileTest()
         {
-            Task.Run(async () => await server.Start());
+            Task.Run(() => server.Start());
 
-            client.Connect();
-
-            Assert.Throws<AggregateException>(() =>
+            try
             {
-                client.Get("olololo", savedFilesPath).Wait();
-            });
-
-            server.Stop();
-            client.Stop();
+                client.Connect();
+                Assert.Throws<AggregateException>(() => { client.Get("olololo", savedFilesPath).Wait(); });
+            }
+            finally
+            {
+                server.Stop();
+                client.Stop();
+            }
         }
 
         [Test]
@@ -160,22 +182,28 @@ namespace FTPTests
 
             Task.Run(async () =>
             {
-                await server.Start();
+                server.Start();
 
-                client.Connect();
+                List <(string, bool)> list;
 
-                await client.Get("Example\\testPng.png", savedFilesPath);
+                try
+                {
+                    client.Connect();
+                    await client.Get("Example\\testPng.png", savedFilesPath);
 
-                Assert.IsTrue(File.Exists(pathToFile));
+                    Assert.IsTrue(File.Exists(pathToFile));
 
-                var listTestFolder = client.List("Example\\testFolder").Result;
-
-                server.Stop();
-                client.Stop();
+                     (_, list) = client.List("Example\\testFolder").Result;
+                }
+                finally
+                {
+                    server.Stop();
+                    client.Stop();
+                }
 
                 for (var i = 0; i < expectedRequestListFolder.Count; ++i)
                 {
-                    Assert.AreEqual(expectedRequestListFolder[i], listTestFolder.Item2[i]);
+                    Assert.AreEqual(expectedRequestListFolder[i], list[i]);
                 }
             });
         }
