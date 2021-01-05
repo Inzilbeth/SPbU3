@@ -27,15 +27,11 @@ namespace Task1Client
         /// <summary>
         /// Connection to the server.
         /// </summary>
-        public void Connect()
+        public async Task Connect()
         {
-            client = new TcpClient(server, port);
+            client = new TcpClient();
+            await client.ConnectAsync(server, port);
         }
-
-        /// <summary>
-        /// Simple demonstration of functionality.
-        /// </summary>
-        public void Start() => Connect();
 
         /// <summary>
         /// Request for a files and folders list by directory.

@@ -35,7 +35,7 @@ namespace Task1Client
             }
 
             var client = new Client(ip, port);
-            client.Start();
+            client.Connect();
 
             while (true)
             {

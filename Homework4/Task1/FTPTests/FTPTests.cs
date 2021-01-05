@@ -35,7 +35,7 @@ namespace FTPTests
 
             server = new Server(port);
             start = Task.Run(() => server.Start());
-            
+
             client = new Client(address, port);
 
             expectedRequestList = new List<(string, bool)>();
@@ -56,7 +56,7 @@ namespace FTPTests
 
             try
             {
-                client.Connect();
+                await client.Connect();
                 (amount, list) = await client.List("Example");
             }
             finally
@@ -81,7 +81,7 @@ namespace FTPTests
 
             try
             {
-                client.Connect();
+                await client.Connect();
 
                 (amount, list) = await client.List("Example\\testFolder");
             }
@@ -100,16 +100,14 @@ namespace FTPTests
         }
 
         [Test]
-        public void ListNonexistantDirectoryThrowsTest()
+        public async Task ListNonexistantDirectoryThrowsTest()
         {
             try
             {
-                client.Connect();
+                await client.Connect();
 
-                Assert.Throws<AggregateException>(() =>
-                {
-                    var res = client.List("nonexistant").Result;
-                });
+                Assert.ThrowsAsync<DirectoryNotFoundException>(async () =>
+                    await client.List("nonexistant"));
             }
             finally
             {
@@ -131,7 +129,7 @@ namespace FTPTests
 
             try
             {
-                client.Connect();
+                await client.Connect();
                 await client.Get("Example\\testTxt.txt", savedFilesPath);
             }
             finally
@@ -148,11 +146,11 @@ namespace FTPTests
         }
 
         [Test]
-        public void GetNonexistantFileTest()
+        public async Task GetNonexistantFileTest()
         {
             try
             {
-                client.Connect();
+                await client.Connect();
                 Assert.Throws<AggregateException>(() => { client.Get("olololo", savedFilesPath).Wait(); });
             }
             finally
@@ -163,39 +161,41 @@ namespace FTPTests
         }
 
         [Test]
-        public void SimultaneousRequestsTest()
+        public async Task SimultaneousRequestsTest()
         {
-            var pathToFile = Path.Combine(savedFilesPath, "testPng.png");
+            var pathToSavedFile = Path.Combine(savedFilesPath, "testPng.png");
 
-            if (File.Exists(pathToFile))
+            if (File.Exists(pathToSavedFile))
             {
-                File.Delete(pathToFile);
+                File.Delete(pathToSavedFile);
             }
+            Directory.CreateDirectory(savedFilesPath);
 
-            Task.Run(async () =>
+            (int amount, List<(string, bool)> list) result = (0, new List<(string, bool)>());
+
+            try
             {
-                List <(string, bool)> list;
+                await client.Connect();
+                result = await client.List("Example\\testFolder");
 
-                try
-                {
-                    client.Connect();
-                    await client.Get("Example\\testPng.png", savedFilesPath);
+                await client.Connect();
+                await client.Get("Example\\testPng.png", savedFilesPath);
+            }
+            finally
+            {
+                server.Stop();
+                client.Stop();
 
-                    Assert.IsTrue(File.Exists(pathToFile));
+                Assert.IsTrue(File.Exists(pathToSavedFile));
 
-                     (_, list) = client.List("Example\\testFolder").Result;
-                }
-                finally
-                {
-                    server.Stop();
-                    client.Stop();
-                }
+                File.Delete(pathToSavedFile);
+                Directory.Delete(savedFilesPath);
 
                 for (var i = 0; i < expectedRequestListFolder.Count; ++i)
                 {
-                    Assert.AreEqual(expectedRequestListFolder[i], list[i]);
+                    Assert.AreEqual(expectedRequestListFolder[i], result.list[i]);
                 }
-            });
+            }
         }
 
         [TearDown]

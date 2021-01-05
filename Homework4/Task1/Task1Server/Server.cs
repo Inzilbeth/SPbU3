@@ -92,7 +92,7 @@ namespace Task1Server
                     }
 
                     using var reader = new StreamReader(client.GetStream());
-                    using var writer = new StreamWriter(client.GetStream()) {AutoFlush = true};
+                    await using var writer = new StreamWriter(client.GetStream()) {AutoFlush = true};
 
                     var received = await reader.ReadLineAsync();
 
