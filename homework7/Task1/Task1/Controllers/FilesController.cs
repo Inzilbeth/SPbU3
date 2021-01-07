@@ -10,12 +10,19 @@ using Task1.Models;
 
 namespace Task1.Controllers
 {
+    /// <summary>
+    /// Controller for assemblies uploading.
+    /// </summary>
     public class FilesController : Controller
     {
+        /// <summary>
+        /// Uploads assemblies, launches tests and redirects to the page with results.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult> Upload(IFormFileCollection files)
         {
             await using var repository = new Repository();
+
             var currentTestRun = new TestRun
             {
                 Id = Guid.NewGuid(),

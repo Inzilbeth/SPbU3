@@ -1,16 +1,23 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using MyNUnitLib;
 
 namespace Task1.Models
 {
+    /// <summary>
+    /// Simplified model of <see cref="TestInfo"/>.
+    /// </summary>
     public class TestInfoModel
     {
         /// <summary>
-        /// Name of a method.
+        /// Id for the database.
         /// </summary>
         [Key]
         public Guid Id { get; set; }
 
+        /// <summary>
+        /// Name of a method.
+        /// </summary>
         public string MethodName { get; set; }
 
         /// <summary>
