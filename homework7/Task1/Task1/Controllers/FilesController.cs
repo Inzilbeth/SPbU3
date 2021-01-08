@@ -25,12 +25,12 @@ namespace Task1.Controllers
 
             var currentTestRun = new TestRun
             {
-                Id = Guid.NewGuid(),
+                LaunchedAt = DateTime.Now,
                 Source = new List<AssemblyFile>(),
                 Report = new List<TestInfoModel>()
             };
 
-            if (files != null)
+            if (files.Count > 0)
             {
                 foreach (var file in files)
                 {
@@ -43,6 +43,12 @@ namespace Task1.Controllers
                     });
                 }
             }
+            else
+            {
+                return RedirectToAction("NoFilesAttached", "home"); ;
+            }
+
+            files = new FormFileCollection();
 
             var result = MyNUnit.RunTestsAndGetReport(currentTestRun.Source.
                 Select(s => s.Content)).

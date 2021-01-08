@@ -27,6 +27,11 @@ namespace Task1.Controllers
             return View();
         }
 
+        public IActionResult NoFilesAttached()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Opens privacy page.
         /// </summary>

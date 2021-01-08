@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyNUnit", "MyNUnit\MyNUnit.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyNUnitAttributes", "MyNUnitAttributes\MyNUnitAttributes.csproj", "{B60E72F5-0356-48E6-BE80-96147B874AC6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task1Tests", "Task1Tests\Task1Tests.csproj", "{E758F73D-C82E-4713-B682-6C96BCEE7DBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,14 @@ Global
 		{B60E72F5-0356-48E6-BE80-96147B874AC6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B60E72F5-0356-48E6-BE80-96147B874AC6}.Release|x64.ActiveCfg = Release|Any CPU
 		{B60E72F5-0356-48E6-BE80-96147B874AC6}.Release|x64.Build.0 = Release|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Debug|x64.Build.0 = Debug|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Release|x64.ActiveCfg = Release|Any CPU
+		{E758F73D-C82E-4713-B682-6C96BCEE7DBE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

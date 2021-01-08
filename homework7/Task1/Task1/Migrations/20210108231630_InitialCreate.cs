@@ -11,11 +11,11 @@ namespace Task1.Migrations
                 name: "Runs",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    LaunchedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Runs", x => x.Id);
+                    table.PrimaryKey("PK_Runs", x => x.LaunchedAt);
                 });
 
             migrationBuilder.CreateTable(
@@ -25,16 +25,16 @@ namespace Task1.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    TestRunId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    TestRunLaunchedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AssemblyFile", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AssemblyFile_Runs_TestRunId",
-                        column: x => x.TestRunId,
+                        name: "FK_AssemblyFile_Runs_TestRunLaunchedAt",
+                        column: x => x.TestRunLaunchedAt,
                         principalTable: "Runs",
-                        principalColumn: "Id",
+                        principalColumn: "LaunchedAt",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -50,28 +50,28 @@ namespace Task1.Migrations
                     IsSuccessful = table.Column<bool>(type: "bit", nullable: false),
                     ReasonToIgnore = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Time = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TestRunId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    TestRunLaunchedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TestInfoModel", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TestInfoModel_Runs_TestRunId",
-                        column: x => x.TestRunId,
+                        name: "FK_TestInfoModel_Runs_TestRunLaunchedAt",
+                        column: x => x.TestRunLaunchedAt,
                         principalTable: "Runs",
-                        principalColumn: "Id",
+                        principalColumn: "LaunchedAt",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssemblyFile_TestRunId",
+                name: "IX_AssemblyFile_TestRunLaunchedAt",
                 table: "AssemblyFile",
-                column: "TestRunId");
+                column: "TestRunLaunchedAt");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestInfoModel_TestRunId",
+                name: "IX_TestInfoModel_TestRunLaunchedAt",
                 table: "TestInfoModel",
-                column: "TestRunId");
+                column: "TestRunLaunchedAt");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

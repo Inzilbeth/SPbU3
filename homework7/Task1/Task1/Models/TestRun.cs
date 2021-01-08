@@ -10,10 +10,10 @@ namespace Task1.Models
     public class TestRun
     {
         /// <summary>
-        /// Id for the database.
+        /// Shows when tests started running.
         /// </summary>
         [Key]
-        public Guid Id { get; set; }
+        public DateTime LaunchedAt { get; set; }
 
         /// <summary>
         /// Tested assemblies.

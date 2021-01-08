@@ -10,7 +10,7 @@ using Task1.Models;
 namespace Task1.Migrations
 {
     [DbContext(typeof(Repository))]
-    [Migration("20210107201630_InitialCreate")]
+    [Migration("20210108231630_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,12 +33,12 @@ namespace Task1.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TestRunId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime?>("TestRunLaunchedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestRunId");
+                    b.HasIndex("TestRunLaunchedAt");
 
                     b.ToTable("AssemblyFile");
                 });
@@ -67,26 +67,25 @@ namespace Task1.Migrations
                     b.Property<string>("ReasonToIgnore")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("TestRunId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime?>("TestRunLaunchedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Time")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestRunId");
+                    b.HasIndex("TestRunLaunchedAt");
 
                     b.ToTable("TestInfoModel");
                 });
 
             modelBuilder.Entity("Task1.Models.TestRun", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime>("LaunchedAt")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("LaunchedAt");
 
                     b.ToTable("Runs");
                 });
@@ -95,14 +94,14 @@ namespace Task1.Migrations
                 {
                     b.HasOne("Task1.Models.TestRun", null)
                         .WithMany("Source")
-                        .HasForeignKey("TestRunId");
+                        .HasForeignKey("TestRunLaunchedAt");
                 });
 
             modelBuilder.Entity("Task1.Models.TestInfoModel", b =>
                 {
                     b.HasOne("Task1.Models.TestRun", null)
                         .WithMany("Report")
-                        .HasForeignKey("TestRunId");
+                        .HasForeignKey("TestRunLaunchedAt");
                 });
 
             modelBuilder.Entity("Task1.Models.TestRun", b =>
