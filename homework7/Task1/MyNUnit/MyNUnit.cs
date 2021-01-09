@@ -28,10 +28,20 @@ namespace MyNUnitLib
         }
 
         /// <summary>
+        /// Clears currently stored testing methods and results.
+        /// </summary>
+        private static void Clear()
+        {
+            methodsToTest.Clear();
+            testResults.Clear();
+        }
+
+        /// <summary>
         /// Runs all the tests from the specified path prints the results to the console.
         /// </summary>
         public static void RunTestsAndPrintReport(string path)
         {
+            Clear();
             AnalyzePathAndExecuteTests(path);
 
             PrintResults();
@@ -42,6 +52,7 @@ namespace MyNUnitLib
         /// </summary>
         public static Dictionary<Type, List<TestInfo>> RunTestsAndGetReport(string path)
         {
+            Clear();
             AnalyzePathAndExecuteTests(path);
 
             return GetDictionaryOfReports();
@@ -52,7 +63,8 @@ namespace MyNUnitLib
         /// </summary>
         public static Dictionary<Type, List<TestInfo>> RunTestsAndGetReport(IEnumerable<byte[]> assemblies)
         {
-            AnalyzePathAndExecuteTests(assemblies);
+            Clear();
+            AnalyzeBinariesAndExecuteTests(assemblies);
 
             return GetDictionaryOfReports();
         }
@@ -75,7 +87,7 @@ namespace MyNUnitLib
         /// <summary>
         /// Prepares the assemblies and runs all the tests using binaries.
         /// </summary>
-        private static void AnalyzePathAndExecuteTests(IEnumerable<byte[]> assemblies)
+        private static void AnalyzeBinariesAndExecuteTests(IEnumerable<byte[]> assemblies)
         {
             var classes = GetTypes(assemblies);
 
