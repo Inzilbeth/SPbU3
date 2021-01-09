@@ -26,6 +26,7 @@ namespace Task1
             DataContext = model;
 
             InitializeComponent();
+            model.Disconnected += () => connectButton.IsEnabled = true;
         }
 
         /// <summary>
@@ -37,7 +38,8 @@ namespace Task1
                 "To see subfolders: double-click on folder\n" +
                 "To connect to server and see its contents: input address and port and click on \"Connect\" button\n" +
                 "To set download folder: press \"choose\" button when inside of the desired folder\n" +
-                "To download file from server: double-click on file\n", "Pro Tip!");
+                "To download file from server: double-click on file\n" +
+                "To change connection target: input new address and/or port, then exit input window and press \"Connect\"\n", "Pro Tip!");
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace Task1
         /// </summary>
         private void addressTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            model.isConnected = false;
+            model.IsConnected = false;
         }
 
         /// <summary>
@@ -62,7 +64,7 @@ namespace Task1
         /// </summary>
         private void portTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            model.isConnected = false;
+            model.IsConnected = false;
         }
 
         /// <summary>
@@ -94,7 +96,11 @@ namespace Task1
         /// </summary>
         private async void Connect_Click(object sender, RoutedEventArgs e)
         {
+            var button = sender as Button;
+
             await model.Connect();
+
+            if (button != null) button.IsEnabled = false;
         }
 
         /// <summary>

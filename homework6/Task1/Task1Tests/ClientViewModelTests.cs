@@ -32,7 +32,7 @@ namespace Task1Tests
             model = new ClientViewModel(downloadPath) {Port = "9999", Server = address};
             model.ThrowError += ErrorThrown;
             wasErrorThrown = false;
-            model.isConnected = false;
+            model.IsConnected = false;
             await model.Connect();
         }
 
@@ -40,7 +40,7 @@ namespace Task1Tests
         public void ConnectsTest()
         {
             server.Stop();
-            Assert.IsTrue(model.isConnected);
+            Assert.IsTrue(model.IsConnected);
         }
 
         [Test]

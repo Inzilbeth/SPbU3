@@ -26,6 +26,11 @@ namespace Task1
         private int port;
 
         /// <summary>
+        /// Server IP for connection.
+        /// </summary>
+        private string server;
+
+        /// <summary>
         /// Path to the current client folder.
         /// </summary>
         private string currentClientPath;
@@ -58,7 +63,7 @@ namespace Task1
         /// <summary>
         /// Download folder name.
         /// </summary>
-        public string downloadDirectory
+        public string DownloadDirectory
         {
             get
             {
@@ -75,17 +80,29 @@ namespace Task1
         /// <summary>
         /// Whether client is connected to the server.
         /// </summary>
-        public bool isConnected = false;
+        public bool IsConnected { get; set; } = false;
 
         /// <summary>
         /// Client's root path.
         /// </summary>
-        public string clientRootPath;
+        public string ClientRootPath { get; private set; }
 
         /// <summary>
         /// Address for connection.
         /// </summary>
-        public string Server { get; set; }
+        public string Server
+        {
+            get
+            {
+                OnConnectionChange();
+                return server;
+            }
+            set
+            {
+                OnConnectionChange();
+                server = value;
+            }
+        }
 
         /// <summary>
         /// Displayed server folder names.
@@ -114,14 +131,20 @@ namespace Task1
         {
             get
             {
-                isConnected = false;
+                OnConnectionChange();
                 return port.ToString();
             }
             set
             {
-                isConnected = false;
+                OnConnectionChange();
                 port = Convert.ToInt32(value);
             }
+        }
+
+        private void OnConnectionChange()
+        {
+            Disconnected?.Invoke();
+            IsConnected = false;
         }
 
         /// <summary>
@@ -140,6 +163,11 @@ namespace Task1
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        /// Event for disconnection.
+        /// </summary>
+        public event Action Disconnected;
+
+        /// <summary>
         /// Model initialization.
         /// </summary>
         public ClientViewModel(string rootClientDirectory)
@@ -147,10 +175,10 @@ namespace Task1
             Server = "127.0.0.1";
             port = 9999;
 
-            clientRootPath = rootClientDirectory;
+            ClientRootPath = rootClientDirectory;
 
-            currentClientPath = clientRootPath;
-            downloadPath = clientRootPath;
+            currentClientPath = ClientRootPath;
+            downloadPath = ClientRootPath;
 
             сurrentServerDirectory = "";
             currentClientDirectory = "";
@@ -174,7 +202,7 @@ namespace Task1
         /// </summary>
         public async Task Connect()
         {
-            if (isConnected)
+            if (IsConnected)
             {
                 return;
             }
@@ -187,12 +215,13 @@ namespace Task1
             {
                 await client.Connect();
                 await InitializeCurrentPathsOnServer();
-                isConnected = true;
+                IsConnected = true;
             }
             catch (Exception e)
             {
                 client.Stop();
-                isConnected = false;
+                IsConnected = false;
+                Disconnected?.Invoke();
                 ThrowError(this, e.Message);
             }
         }
@@ -289,7 +318,7 @@ namespace Task1
             }
             else
             {
-                ThrowError(this, "Directory not found!");
+                ThrowError(this, $"\"{nextDirectoryPath}\" directory not found!");
             }
         }
 
@@ -324,7 +353,7 @@ namespace Task1
         {
             try
             {
-                var dirToOpen = Path.Combine(clientRootPath, folderPath);
+                var dirToOpen = Path.Combine(ClientRootPath, folderPath);
 
                 var folders = Directory.EnumerateDirectories(dirToOpen);
 
@@ -375,7 +404,16 @@ namespace Task1
             {
                 if (e.Message == "-1")
                 {
-                    ThrowError(this, "Directory not found!");
+                    if (listRequest == "")
+                    {
+                        ThrowError(this, $"Server's root directory not found!" +
+                                         $"\nIf you're using attached implementation of FTPServer, " +
+                                         $"make sure you have \"bin\\storage\" folder created in the FTPServer folder.");
+                    }
+                    else
+                    {
+                        ThrowError(this, $"Relative path to \"{listRequest}\" not found!");
+                    }
                     return;
                 }
 
@@ -429,10 +467,11 @@ namespace Task1
                 return;
             }
 
+            var toOpen = "";
+
             try
             {
                 var index = сurrentServerDirectory.LastIndexOf('\\');
-                string toOpen;
 
                 if (index > 0)
                 {
@@ -449,7 +488,7 @@ namespace Task1
             {
                 if (e.Message == "-1")
                 {
-                    ThrowError(this, "Directory not found!");
+                    ThrowError(this, $"\"{toOpen}\" directory not found!");
                     return;
                 }
 
@@ -467,7 +506,7 @@ namespace Task1
                 return;
             }
 
-            downloadDirectory = currentClientPath + "\\";
+            DownloadDirectory = currentClientPath + "\\";
         }
 
         /// <summary>
