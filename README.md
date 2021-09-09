@@ -1,2 +1,2 @@
 # SPbU3
-Homeworks from the SPbU's 3d semester 
+Homeworks from SPbU's 3d semester 
