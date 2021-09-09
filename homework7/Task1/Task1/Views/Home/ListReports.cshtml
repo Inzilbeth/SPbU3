@@ -1,0 +1,48 @@
+﻿@model System.Collections.Generic.IEnumerable<TestRun>
+@{
+    ViewBag.Title = "Tests";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Tests</title>
+    <link rel ="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+</head>
+<body>
+    <div class="card-body">
+        <h2>List of Tests:</h2>
+        @foreach (var run in Model)
+        {
+            <b>Test run launched at: @Html.DisplayFor(modelItem => run.LaunchedAt)</b>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>IsSuccessful</th>
+                        <th>IsIgnored</th>
+                        <th>ReasonToIgnore</th>
+                        <th>ExpectedException</th>
+                        <th>ActualException</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var testInfo in run.Report)
+                    {
+                        <tr>
+                            <td>@testInfo.MethodName</td>
+                            <td>@testInfo.IsSuccessful</td>
+                            <td>@testInfo.IsIgnored</td>
+                            <td>@testInfo.ReasonToIgnore</td>
+                            <td>@testInfo.ExpectedException</td>
+                            <td>@testInfo.ActualException</td>
+                            <td>@testInfo.Time</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</body>
+</html>
