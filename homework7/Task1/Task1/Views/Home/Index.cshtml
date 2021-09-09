@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<link rel ="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+<div class="text-center">
+    <form action="/files/upload" enctype="multipart/form-data" method="post">
+        <label>Choose assemblies for testing:</label>
+        <input accept=".dll" id="files" multiple="multiple" name="files" type="file" />
+        <input id="btnUpload" type="submit" value="Upload and Test" />
+    </form>
+</div>
