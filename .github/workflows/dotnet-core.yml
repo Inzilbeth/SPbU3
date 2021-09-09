@@ -31,4 +31,3 @@ jobs:
     
     - name: Test
       run: dotnet test Homework7\Task1\ --no-restore --verbosity normal
-
